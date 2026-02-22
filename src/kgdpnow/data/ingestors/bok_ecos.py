@@ -25,6 +25,11 @@ class BOKECOSIngestor:
         self.timeout_sec = timeout_sec
         if not self.api_key:
             raise ValueError("BOK_API_KEY is required (set .env or environment variable)")
+    def __init__(self, api_key: str | None = None, timeout_sec: int = 30) -> None:
+        self.api_key = api_key or os.getenv("BOK_API_KEY")
+        self.timeout_sec = timeout_sec
+        if not self.api_key:
+            raise ValueError("BOK_API_KEY is required")
 
     def _end_period(self, frequency: Frequency) -> str:
         now = datetime.today()
@@ -33,7 +38,7 @@ class BOKECOSIngestor:
         quarter = (now.month - 1) // 3 + 1
         return f"{now.year}Q{quarter}"
 
-    def build_url(self, spec: DataSeriesSpec) -> str:
+    def fetch_series(self, spec: DataSeriesSpec) -> pd.DataFrame:
         end_period = self._end_period(spec.frequency)
         freq_token = spec.frequency.value
 
@@ -52,22 +57,15 @@ class BOKECOSIngestor:
         ]
         if spec.item_code_2:
             args.append(spec.item_code_2)
-        return "/".join(args)
 
-    def fetch_series(self, spec: DataSeriesSpec) -> pd.DataFrame:
-        url = self.build_url(spec)
+        url = "/".join(args)
         response = requests.get(url, timeout=self.timeout_sec)
         response.raise_for_status()
         payload = response.json()
 
-        result = payload.get("RESULT")
-        if result:
-            message = result.get("MESSAGE", "Unknown ECOS API error")
-            raise ECOSFetchError(f"[{spec.name}] {message} | url={url}")
-
         rows = payload.get("StatisticSearch", {}).get("row", [])
         if not rows:
-            raise ECOSFetchError(f"[{spec.name}] empty row payload | url={url}")
+            return pd.DataFrame(columns=[spec.name])
 
         df = pd.DataFrame(rows)
         s = pd.to_numeric(df["DATA_VALUE"].astype(str).str.replace(",", "", regex=False), errors="coerce")

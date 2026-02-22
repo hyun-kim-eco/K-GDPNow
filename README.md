@@ -5,6 +5,7 @@
 ## Data Layer 실행
 
 ### 1) `.env` 파일 생성
+1) `.env` 파일 생성
 
 ```bash
 cp .env.example .env
@@ -12,6 +13,7 @@ cp .env.example .env
 ```
 
 ### 2) 실행 환경 준비 후 수집 실행
+2) 실행 환경 준비 후 수집 실행
 
 ```bash
 python -m venv .venv

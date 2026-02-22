@@ -5,6 +5,7 @@ from datetime import datetime
 import pandas as pd
 
 from .ingestors.bok_ecos import BOKECOSIngestor, ECOSFetchError
+from .ingestors.bok_ecos import BOKECOSIngestor
 from .models import DataSeriesSpec
 from .quality import DataQualityError, missing_rate, validate_time_series_frame
 from .store import DataStore
@@ -31,6 +32,11 @@ class DataIngestionPipeline:
                 df = self.ingestor.fetch_series(spec)
                 validate_time_series_frame(df, spec.name)
             except (ECOSFetchError, DataQualityError, ValueError) as exc:
+            df = self.ingestor.fetch_series(spec)
+
+            try:
+                validate_time_series_frame(df, spec.name)
+            except DataQualityError as exc:
                 skipped_series.append({"name": spec.name, "reason": str(exc)})
                 continue
 
