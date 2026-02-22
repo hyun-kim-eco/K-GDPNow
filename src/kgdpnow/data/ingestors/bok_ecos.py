@@ -10,6 +10,10 @@ from dotenv import load_dotenv
 from ..models import DataSeriesSpec, Frequency
 
 
+class ECOSFetchError(RuntimeError):
+    """Raised when ECOS returns an explicit API-level failure."""
+
+
 class BOKECOSIngestor:
     base_url = "https://ecos.bok.or.kr/api/StatisticSearch"
 
