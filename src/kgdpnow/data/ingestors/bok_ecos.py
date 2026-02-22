@@ -5,6 +5,7 @@ from datetime import datetime
 
 import pandas as pd
 import requests
+from dotenv import load_dotenv
 
 from ..models import DataSeriesSpec, Frequency
 
@@ -12,6 +13,14 @@ from ..models import DataSeriesSpec, Frequency
 class BOKECOSIngestor:
     base_url = "https://ecos.bok.or.kr/api/StatisticSearch"
 
+    def __init__(self, api_key: str | None = None, timeout_sec: int = 30, env_file: str | None = ".env") -> None:
+        if env_file:
+            load_dotenv(env_file)
+
+        self.api_key = api_key or os.getenv("BOK_API_KEY")
+        self.timeout_sec = timeout_sec
+        if not self.api_key:
+            raise ValueError("BOK_API_KEY is required (set .env or environment variable)")
     def __init__(self, api_key: str | None = None, timeout_sec: int = 30) -> None:
         self.api_key = api_key or os.getenv("BOK_API_KEY")
         self.timeout_sec = timeout_sec
