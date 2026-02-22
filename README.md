@@ -23,9 +23,3 @@ python run_data_layer.py
 > `run_data_layer.py`와 `BOKECOSIngestor` 모두 `.env`에서 `BOK_API_KEY`를 읽습니다.
 
 실행 후 데이터는 `data/raw`, `data/staging`, `data/vintage_store`에 `as_of_date=YYYY-MM-DD` 파티션으로 저장됩니다.
-
-## 지표 CSV
-
-- 기본 월간 nowcast 후보 지표는 `data_list.csv`에 포함되어 있습니다.
-- 컬럼: `Name`, `API_Code`, `Item_code`, `Item_code_2`
-- ECOS 코드 체계 변경 가능성이 있으므로, 실제 운영 전 `API_Code/Item_code` 유효성은 1회 점검을 권장합니다.

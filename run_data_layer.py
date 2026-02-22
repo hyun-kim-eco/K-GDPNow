@@ -15,6 +15,9 @@ if __name__ == "__main__":
     api_key = os.getenv("BOK_API_KEY")
     if not api_key:
         raise SystemExit("BOK_API_KEY 환경변수가 필요합니다. (.env 또는 시스템 환경변수)")
+    api_key = os.getenv("BOK_API_KEY")
+    if not api_key:
+        raise SystemExit("BOK_API_KEY 환경변수가 필요합니다.")
 
     store = DataStore(root="data")
     ingestor = BOKECOSIngestor(api_key=api_key)

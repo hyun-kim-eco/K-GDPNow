@@ -21,6 +21,11 @@ class BOKECOSIngestor:
         self.timeout_sec = timeout_sec
         if not self.api_key:
             raise ValueError("BOK_API_KEY is required (set .env or environment variable)")
+    def __init__(self, api_key: str | None = None, timeout_sec: int = 30) -> None:
+        self.api_key = api_key or os.getenv("BOK_API_KEY")
+        self.timeout_sec = timeout_sec
+        if not self.api_key:
+            raise ValueError("BOK_API_KEY is required")
 
     def _end_period(self, frequency: Frequency) -> str:
         now = datetime.today()
