@@ -10,6 +10,7 @@ from src.data.sample_loader import IndicatorSpec, align_with_release_lags, load_
 from src.features.zscore import composite_scores, pct_change_transform, rolling_zscore
 from src.regime.classifier import classify_regime
 from src.strategy.allocation import target_weights
+from src.visualization.report_builder import build_mvp_report
 
 
 def main() -> None:
@@ -60,10 +61,14 @@ def main() -> None:
     regimes.rename("regime").to_csv(output / "regimes.csv")
     backtest.to_csv(output / "backtest_results.csv")
 
+    report_dir = root / "reports"
+    report_path = build_mvp_report(composites, regimes, backtest, report_dir)
+
     print("Saved outputs:")
     print(f"- {output / 'composites.csv'}")
     print(f"- {output / 'regimes.csv'}")
     print(f"- {output / 'backtest_results.csv'}")
+    print(f"- {report_path}")
 
 
 if __name__ == "__main__":
